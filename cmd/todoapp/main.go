@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	core_logger "github.com/IvanJSBog/goland-todo-app/internal/core/logger"
-	core_postgres_pool "github.com/IvanJSBog/goland-todo-app/internal/core/repository/postgres/pool"
+	"github.com/IvanJSBog/goland-todo-app/internal/core/repository/postgres/pool/pgx"
 	core_http_middleware "github.com/IvanJSBog/goland-todo-app/internal/core/transport/http/middleware"
 	core_http_server "github.com/IvanJSBog/goland-todo-app/internal/core/transport/http/server"
 	users_postgres_repository "github.com/IvanJSBog/goland-todo-app/internal/features/users/repository/postgres"
@@ -28,7 +28,7 @@ func main() {
 	}
 	defer logger.Close()
 
-	pool, err := core_postgres_pool.NewConnectionPool(ctx, core_postgres_pool.NewConfigMust())
+	pool, err := core_pgx_pool.NewConnectionPool(ctx, core_pgx_pool.NewConfigMust())
 	if err != nil {
 		logger.Fatal("failed to initialize postgres connection pool", zap.Error(err))
 	}
@@ -45,8 +45,8 @@ func main() {
 		logger,
 		core_http_middleware.RequestId(),
 		core_http_middleware.Logger(logger),
-		core_http_middleware.Panic(),
 		core_http_middleware.Trace(),
+		core_http_middleware.Panic(),
 	)
 
 	apiVersionRouter := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1)

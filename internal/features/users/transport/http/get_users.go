@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	core_logger "github.com/IvanJSBog/goland-todo-app/internal/core/logger"
+	core_http_request "github.com/IvanJSBog/goland-todo-app/internal/core/transport/http/request"
 	core_http_response "github.com/IvanJSBog/goland-todo-app/internal/core/transport/http/response"
-	core_http_utils "github.com/IvanJSBog/goland-todo-app/internal/core/transport/http/utils"
 )
 
 type GetUsersResponse []UserDtoResponse
@@ -40,11 +40,11 @@ func (u *UsersHTTPHandler) GetUsers(rw http.ResponseWriter, req *http.Request) {
 }
 
 func getLimitOffsetQueryParams(r *http.Request) (*int, *int, error) {
-	limit, err := core_http_utils.GetIntQueryParam(r, "limit")
+	limit, err := core_http_request.GetIntQueryParam(r, "limit")
 	if err != nil {
 		return nil, nil, fmt.Errorf("get limit parameter: %w", err)
 	}
-	offset, err := core_http_utils.GetIntQueryParam(r, "offset")
+	offset, err := core_http_request.GetIntQueryParam(r, "offset")
 	if err != nil {
 		return nil, nil, fmt.Errorf("get offset parameter: %w", err)
 	}

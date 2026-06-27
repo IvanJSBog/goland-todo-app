@@ -39,7 +39,7 @@ func Logger(log *core_logger.Logger) Middleware {
 				zap.String("url", r.URL.String()),
 			)
 
-			ctx := context.WithValue(r.Context(), "log", l)
+			ctx := context.WithValue(r.Context(), core_logger.LoggerContextKey, l)
 
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})

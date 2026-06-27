@@ -7,7 +7,7 @@ import (
 
 	"github.com/IvanJSBog/goland-todo-app/internal/core/domain"
 	core_errors "github.com/IvanJSBog/goland-todo-app/internal/core/errors"
-	"github.com/jackc/pgx/v5"
+	core_postgres_pool "github.com/IvanJSBog/goland-todo-app/internal/core/repository/postgres/pool"
 )
 
 func (m *UsersRepository) GetUser(ctx context.Context, id int) (domain.User, error) {
@@ -32,7 +32,7 @@ func (m *UsersRepository) GetUser(ctx context.Context, id int) (domain.User, err
 	)
 
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
+		if errors.Is(err, core_postgres_pool.ErrNoRows) {
 			return domain.User{}, fmt.Errorf("user with id=%d : %w", id, core_errors.ErrNotFound)
 		}
 
