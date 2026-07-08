@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	core_config "github.com/IvanJSBog/goland-todo-app/internal/core/config"
 	core_logger "github.com/IvanJSBog/goland-todo-app/internal/core/logger"
 	"github.com/IvanJSBog/goland-todo-app/internal/core/repository/postgres/pool/pgx"
 	core_http_middleware "github.com/IvanJSBog/goland-todo-app/internal/core/transport/http/middleware"
@@ -21,10 +22,9 @@ import (
 	"go.uber.org/zap"
 )
 
-var timeZone = time.UTC
-
 func main() {
-	time.Local = timeZone
+	cnf := core_config.NewConfigMust()
+	time.Local = cnf.TimeZone
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
@@ -35,7 +35,7 @@ func main() {
 	}
 	defer logger.Close()
 
-	logger.Debug("application time zone", zap.Any("time_zone", timeZone))
+	logger.Debug("application time zone", zap.Any("time_zone", time.Local))
 
 	pool, err := core_pgx_pool.NewConnectionPool(ctx, core_pgx_pool.NewConfigMust())
 	if err != nil {
