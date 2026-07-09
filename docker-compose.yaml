@@ -14,6 +14,7 @@ services:
       - POSTGRES_TIMEOUT=${POSTGRES_TIMEOUT}
       - LOGGER_LEVEL=${LOGGER_LEVEL}
       - TIME_ZONE=${TIME_ZONE}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
       - LOGGER_FOLDER=/app/out/logs
     volumes:
       - ${PROJECT_ROOT}/out/logs:/app/out/logs
@@ -43,3 +44,14 @@ services:
     command: tcp-listen:5432,fork,reuseaddr tcp-connect:todoapp-postgres:5432
     ports:
       - "127.0.0.1:5432:5432"
+  swagger:
+    build:
+      context: ${PROJECT_ROOT}
+      dockerfile_inline: |
+        FROM golang:1.26.4-alpine
+        RUN apk add --no-cache git 
+        RUN go install github.com/swaggo/swag/cmd/swag@v1.16.6
+        WORKDIR /code
+        ENTRYPOINT ["swag"]
+    volumes:
+      - ${PROJECT_ROOT}:/code
